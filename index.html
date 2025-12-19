@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>梗界線大闖關（個人版）</title>
+  <title>梗界線大闖關（個人闖關版）</title>
   <style>
     :root{
       --bg:#0b1020; --card:#121a33; --line:#243059;
@@ -12,7 +12,7 @@
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:system-ui,Segoe UI,Arial,"Noto Sans TC",sans-serif;background:radial-gradient(1200px 800px at 20% -10%, #1a2b6a 0%, var(--bg) 55%);color:var(--text);}
-    .wrap{max-width:980px;margin:0 auto;padding:18px;}
+    .wrap{max-width:1020px;margin:0 auto;padding:18px;}
     .card{background:rgba(18,26,51,.92);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.25);}
     h1{margin:0;font-size:22px}
     .muted{color:var(--muted)}
@@ -22,10 +22,10 @@
       width:100%;border:1px solid var(--line);background:#0f1734;color:var(--text);
       border-radius:14px;padding:12px;font-size:15px;outline:none;
     }
-    textarea{min-height:70px;resize:vertical}
+    textarea{min-height:72px;resize:vertical}
     button{
       border:1px solid var(--line);background:#0f1734;color:var(--text);
-      padding:12px 14px;border-radius:14px;cursor:pointer;font-weight:900;
+      padding:12px 14px;border-radius:14px;cursor:pointer;font-weight:1000;
       transition:transform .06s ease, filter .15s ease;
     }
     button:active{transform:scale(.98)}
@@ -33,13 +33,13 @@
     .primary{background:var(--b);border-color:var(--b)}
     .g{border-color:rgba(34,197,94,.5)} .y{border-color:rgba(250,204,21,.5)} .r{border-color:rgba(239,68,68,.5)}
     .g:hover{background:rgba(34,197,94,.14)} .y:hover{background:rgba(250,204,21,.14)} .r:hover{background:rgba(239,68,68,.14)}
-    .bigQ{font-size:34px;line-height:1.22;font-weight:1000;margin:10px 0 6px}
+    .bigQ{font-size:34px;line-height:1.22;font-weight:1100;margin:10px 0 6px}
     .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);padding:8px 10px;border-radius:999px;color:var(--muted);font-size:13px}
     .bar{height:10px;background:#0e1531;border:1px solid var(--line);border-radius:999px;overflow:hidden}
     .fill{height:100%;width:0%;background:linear-gradient(90deg,var(--g),var(--y),var(--r))}
-    .grid2{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin-top:12px}
-    @media (max-width:900px){.grid2{grid-template-columns:1fr}}
-    .tag{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:1000;border:1px solid transparent}
+    .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:12px;margin-top:12px}
+    @media (max-width:920px){.grid2{grid-template-columns:1fr}}
+    .tag{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:1100;border:1px solid transparent}
     .tG{background:rgba(34,197,94,.18);border-color:rgba(34,197,94,.35)}
     .tY{background:rgba(250,204,21,.18);border-color:rgba(250,204,21,.35)}
     .tR{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.35)}
@@ -51,48 +51,82 @@
     .hide{display:none}
     .stat{border:1px solid var(--line);border-radius:16px;padding:12px;background:#0f1734}
     .stat b{font-size:18px}
+    .map{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .node{
+      border:1px solid var(--line);border-radius:999px;padding:8px 10px;
+      background:#0f1734;color:var(--muted);font-size:12px;font-weight:1000
+    }
+    .node.on{border-color:#3b82f6;color:#dbe7ff;background:rgba(59,130,246,.14)}
+    .node.done{border-color:rgba(34,197,94,.45);color:#b6f7cc;background:rgba(34,197,94,.12)}
+    .badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);padding:7px 10px;border-radius:999px;background:#0f1734;color:var(--text);font-size:12px;font-weight:1000}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="space" style="margin-bottom:12px">
-      <h1>🎮 梗界線大闖關（個人版）</h1>
-      <div class="pill">🟢安全｜🟡有風險｜🔴踩線　⏱️每題 5 秒</div>
+      <h1>🎮 梗界線大闖關（個人闖關版）</h1>
+      <div class="pill">🟢安全｜🟡有風險｜🔴踩線　⏱️每題 6 秒　❤️失誤 3 次 Game Over</div>
     </div>
 
-    <!-- Start Screen -->
+    <!-- Start -->
     <div id="screenStart" class="card">
-      <div class="muted">輸入暱稱後開始（建議：班級座號，例如 204-15）</div>
+      <div class="muted">輸入暱稱後開始（建議：班級-座號，例如 204-15）</div>
       <div style="margin-top:10px" class="row">
         <div style="flex:1;min-width:240px">
           <input id="name" placeholder="你的暱稱 / 班級座號" maxlength="18">
         </div>
         <button class="primary" id="btnGo">開始闖關</button>
       </div>
-      <div class="mini" style="margin-top:10px">
-        遊戲結束會顯示成績頁，可截圖交給老師。<br>
-        小提醒：這是「練判斷與修復」，不是在鼓勵嘴人。
+
+      <div class="grid2" style="margin-top:12px">
+        <div class="stat">
+          <div class="muted">三關地圖</div>
+          <div class="map" style="margin-top:10px">
+            <span class="node">第1關：自以為幽默</span>
+            <span class="node">第2關：講話太直</span>
+            <span class="node">第3關：修復高手</span>
+          </div>
+          <div class="mini" style="margin-top:10px">
+            每關 4 題，共 12 題。答對加分＋連擊；答錯扣❤️。<br>
+            結束會出徽章，可截圖交作業。
+          </div>
+        </div>
+        <div class="stat">
+          <div class="muted">小提醒</div>
+          <div class="mini" style="margin-top:10px">
+            這個遊戲是在練「判斷界線」與「修復說法」，不是在鼓勵嘴人。<br>
+            口訣：<b>意圖是你的；感受是對方的。</b>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Game Screen -->
+    <!-- Game -->
     <div id="screenGame" class="card hide">
       <div class="space">
         <div class="row">
           <span class="pill">玩家：<b id="player">—</b></span>
           <span class="pill">分數：<b id="score">0</b></span>
           <span class="pill">連擊：<b id="streak">0</b>🔥</span>
+          <span class="pill">❤️：<b id="life">3</b></span>
         </div>
         <div class="row">
+          <span class="pill">關卡：<b id="stageName">—</b></span>
           <span class="pill">題目：<b id="idx">0</b>/<b id="total">0</b></span>
-          <span class="pill">剩餘：<b id="t">5</b>s</span>
+          <span class="pill">剩餘：<b id="t">6</b>s</span>
         </div>
+      </div>
+
+      <div class="map" style="margin-top:10px">
+        <span id="n0" class="node">第1關：自以為幽默</span>
+        <span id="n1" class="node">第2關：講話太直</span>
+        <span id="n2" class="node">第3關：修復高手</span>
       </div>
 
       <div style="margin-top:10px" class="bar"><div id="fill" class="fill"></div></div>
 
       <div id="qBox" class="pop">
-        <div class="muted" style="margin-top:10px">這句話是 🟢🟡🔴？（3 秒內直覺選，剩下時間可思考）</div>
+        <div class="muted" style="margin-top:10px">這句話是 🟢🟡🔴？（先直覺選，再看解析）</div>
         <div class="bigQ" id="q">—</div>
 
         <div class="row" style="margin-top:10px">
@@ -103,7 +137,7 @@
         </div>
 
         <div id="hint" class="mini hide" style="margin-top:10px">
-          ①笑的是事還是笑人？②公開講會不會讓人難堪？③被截圖給導師/家長看敢不敢？④對方能拒絕不笑嗎？
+          ①笑的是事還是笑人？②公開講會不會讓人難堪？③被截圖敢不敢？④對方能不能說「不」？
         </div>
       </div>
 
@@ -113,27 +147,29 @@
             <div class="row">
               <span id="tag" class="tag">—</span>
               <span class="muted">建議：</span><b id="ansTxt">—</b>
+              <span class="pill" id="gainPill">+0</span>
             </div>
-            <div style="margin-top:8px;font-weight:900" id="why">—</div>
-            <div class="mini" style="margin-top:10px">提示：意圖是你的；感受是對方的。對方不舒服＝立刻停。</div>
+            <div style="margin-top:8px;font-weight:1000" id="why">—</div>
+            <div class="mini" style="margin-top:10px">失手修復句：<b>「我剛剛那句不太好，我收回，對不起。」</b></div>
           </div>
 
           <div style="flex:1;min-width:260px" class="stat">
-            <div class="muted">加分關：把它改成「同樣好玩但不傷人」（可跳過）</div>
-            <textarea id="rewrite" placeholder="改寫一句更好的說法（例如：改笑事不笑人／或加上尊重與修復）"></textarea>
+            <div class="muted">加分關：把它改成「同樣有效但不傷人」（可跳過）</div>
+            <textarea id="rewrite" placeholder="輸入你的改寫（例如：先征詢→說影響→給選擇 / 加上收回與道歉）"></textarea>
             <div class="row" style="margin-top:8px">
-              <button class="primary" id="btnSubmitRewrite">提交改寫 +2</button>
+              <button class="primary" id="btnSubmitRewrite">提交改寫 +2（含道歉再+1）</button>
               <button id="btnNext">下一題</button>
             </div>
             <div class="mini" style="margin-top:8px">
-              參考：把「你怎麼那麼…」→「我剛剛有點被嚇到/我想確認一下…」；失手就說「我收回，對不起」。
+              小技巧：把「你怎樣怎樣」→「我需要…你可以…嗎？」<br>
+              或先問「我可以直接說嗎？」再講事實。
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- End Screen -->
+    <!-- End -->
     <div id="screenEnd" class="card hide">
       <div class="space">
         <h1>🏁 結算成績</h1>
@@ -146,12 +182,16 @@
           <div class="muted" style="margin-top:10px">總分</div><b id="endScore">0</b>
           <div class="muted" style="margin-top:10px">正確率</div><b id="endAcc">0%</b>
           <div class="muted" style="margin-top:10px">最高連擊</div><b id="endStreak">0</b>
+          <div class="muted" style="margin-top:10px">改寫次數</div><b id="endRewrite">0</b>
         </div>
         <div class="stat">
-          <div class="muted">稱號</div>
-          <div style="font-size:20px;font-weight:1000;margin-top:6px" id="title">—</div>
+          <div class="muted">你拿到的徽章</div>
+          <div id="badges" class="row" style="margin-top:10px"></div>
           <div class="mini" style="margin-top:10px">
-            建議做法：截圖這頁交給老師（或把分數念給老師登記）。
+            建議：截圖這頁交給老師（或把分數念給老師登記）。
+          </div>
+          <div class="mini" style="margin-top:8px">
+            班級共識句（可背）：<b>「誠實要有界線：先顧感受，再講事實。」</b>
           </div>
         </div>
       </div>
@@ -160,32 +200,60 @@
   </div>
 
 <script>
-  // 題庫：你可自由加題（text/ suggested/ why）
-  const Q = [
-    {text:"「你今天看起來胖了欸哈哈」", suggested:"R", why:"拿外貌/身材當笑點＝高敏感，容易讓人羞辱與自卑。"},
-    {text:"「笑死你怎麼那麼笨」", suggested:"R", why:"貼標籤貶低人，包成玩笑也一樣會傷人。"},
-    {text:"「你這髮型很勇敢欸」", suggested:"Y", why:"可能是吐槽外表；若公開講很容易踩線。"},
-    {text:"「你是不是又在演」", suggested:"R", why:"否定情緒/求助，會讓人更不敢說。"},
-    {text:"「你很玻璃心欸，我開玩笑的」", suggested:"R", why:"把責任推回對方＝二次傷害；『我開玩笑』不是免責金牌。"},
-    {text:"「你家很有錢喔？請客啦哈哈」", suggested:"Y", why:"家庭/金錢是敏感點，容易被起鬨或貼標籤。"},
-    {text:"「你沒朋友喔？都自己一個」", suggested:"R", why:"拿社交處境開玩笑會刺到痛點，容易造成孤立。"},
-    {text:"「你這分數…我不意外啦」", suggested:"R", why:"公開嘲諷成績＝讓人難堪，屬於羞辱型玩笑。"},
-    {text:"「我剛剛緊張到講錯，笑我啦」", suggested:"G", why:"笑點放在自己身上（自嘲）通常較安全。"},
-    {text:"「你不舒服我就不講了，謝謝你提醒我」", suggested:"G", why:"能停下來尊重界線，是成熟幽默。"},
-    {text:"「你皮膚今天很熱鬧」", suggested:"R", why:"外貌/皮膚狀況是高敏感點，容易羞恥。"},
-    {text:"「你今天穿這樣也敢出門喔？」", suggested:"R", why:"嘲諷穿著＝公開貶低，對方會被迫尷尬或假笑。"},
+  // ===== 題庫（含三大主題）=====
+  // suggested: "G" | "Y" | "R"
+  const BANK = [
+    // 第1關：自以為幽默
+    {topic:"humor", text:"「你今天看起來胖了欸哈哈」", suggested:"R", why:"拿外貌/身材當笑點＝高敏感，容易羞辱與自卑。"},
+    {topic:"humor", text:"「笑死你怎麼那麼笨」", suggested:"R", why:"貼標籤貶低人，包成玩笑也一樣會傷人。"},
+    {topic:"humor", text:"「你這髮型很勇敢欸」", suggested:"Y", why:"可能在吐槽外表；關係很熟也許可，但公開講很容易踩線。"},
+    {topic:"humor", text:"「你很玻璃心欸，我開玩笑的」", suggested:"R", why:"把責任推回對方＝二次傷害；『我開玩笑』不是免責金牌。"},
+    {topic:"humor", text:"「你沒朋友喔？都自己一個」", suggested:"R", why:"拿社交處境開玩笑會刺到痛點，容易造成孤立。"},
+    {topic:"humor", text:"「我剛剛緊張到講錯，笑我啦」", suggested:"G", why:"笑點放在自己身上（自嘲）通常較安全。"},
+    {topic:"humor", text:"「你皮膚今天很熱鬧」", suggested:"R", why:"外貌/皮膚狀況是高敏感點，容易羞恥。"},
+    {topic:"humor", text:"「我怕你會不舒服，我先確認一下可以嗎？」", suggested:"G", why:"先顧到對方感受、願意停下來確認，是尊重型幽默。"},
+    {topic:"humor", text:"「你家很有錢喔？請客啦哈哈」", suggested:"Y", why:"家庭/金錢是敏感點，容易被起鬨或貼標籤。"},
+    {topic:"humor", text:"「你這分數…我不意外啦」", suggested:"R", why:"公開嘲諷成績＝讓人難堪，屬於羞辱型玩笑。"},
+    {topic:"humor", text:"「你今天穿這樣也敢出門喔？」", suggested:"R", why:"嘲諷穿著＝公開貶低，對方會被迫尷尬或假笑。"},
+    {topic:"humor", text:"「你是不是又在演」", suggested:"R", why:"否定情緒/求助，會讓人更不敢說。"},
+    // 第2關：講話太直
+    {topic:"blunt", text:"「我只是實話實說：你真的很胖」", suggested:"R", why:"『實話』不等於可以傷人；而且外貌不必評論。"},
+    {topic:"blunt", text:"「你很吵欸」", suggested:"Y", why:"可能是在講需求，但像指責；可改『我想專心，你能小聲一點嗎？』"},
+    {topic:"blunt", text:"「你很煩欸不要再問了」", suggested:"R", why:"帶情緒攻擊；可以拒絕但要尊重。"},
+    {topic:"blunt", text:"「你這樣做很沒效率」", suggested:"Y", why:"在講事情但語氣像評判；可改『要不要試試另一種方法？』"},
+    {topic:"blunt", text:"「你就是玻璃心」", suggested:"R", why:"把責任推回對方＝二次傷害；應停下來確認界線。"},
+    {topic:"blunt", text:"「我可以直接說嗎？我覺得你剛剛那句可能會讓人不舒服」", suggested:"G", why:"先征詢同意＋指出影響，不貼標籤，是有界線的直。"},
+    {topic:"blunt", text:"「你這樣很丟臉欸」", suggested:"R", why:"羞辱型語句，會造成傷害與對立。"},
+    {topic:"blunt", text:"「你功課就是不夠努力」", suggested:"R", why:"貼標籤、忽略原因；應改成具體協助與下一步。"},
+    {topic:"blunt", text:"「我不是針對你，我是針對事：剛剛那段我聽不清楚，可以再講一次嗎？」", suggested:"G", why:"聚焦事情＋具體請求，降低攻擊感。"},
+    {topic:"blunt", text:"「你真的很不會讀書」", suggested:"R", why:"人身評價、打擊自尊；應改成具體回饋與方法。"},
+    {topic:"blunt", text:"「我有點擔心你最近看起來很累，你還好嗎？」", suggested:"G", why:"關心式直話：先顧感受，再問狀況。"},
+    {topic:"blunt", text:"「你這髮型超醜」", suggested:"R", why:"外貌羞辱；就算是『直』也沒必要。"},
+    // 第3關：修復高手（練停下來/道歉/修復）
+    {topic:"repair", text:"「我剛剛那句不太好，我收回，對不起。」", suggested:"G", why:"承認影響＋停止＋道歉＝修復最有效。"},
+    {topic:"repair", text:"「你不要想太多啦，我又不是故意的。」", suggested:"R", why:"推責＋否定感受＝會更生氣。"},
+    {topic:"repair", text:"「我剛剛講太快了，我重講一次。你希望我用什麼方式說？」", suggested:"G", why:"給對方選擇感，能降衝突。"},
+    {topic:"repair", text:"「好啦算了，你就是玻璃心。」", suggested:"R", why:"二次傷害，直接爆炸。"},
+    {topic:"repair", text:"「我想確認一下：你剛剛是不是不舒服？如果是，我先停。」", suggested:"G", why:"先確認＋先停，是成熟做法。"},
+    {topic:"repair", text:"「我只是開玩笑而已，你幹嘛那麼認真。」", suggested:"R", why:"把責任推給對方＝踩線。"},
+    {topic:"repair", text:"「我理解你會不舒服，我會注意，下次不拿這個點開玩笑。」", suggested:"G", why:"同理＋承諾改變，修復效果高。"},
+    {topic:"repair", text:"「不然你也講我啊，扯平。」", suggested:"R", why:"把關係拉進互傷，會更糟。"},
+    {topic:"repair", text:"「我說那句的時候沒顧到你感受，謝謝你提醒我。」", suggested:"G", why:"承認＋感謝提醒，有助和解。"},
+    {topic:"repair", text:"「你自己先調整情緒再說。」", suggested:"R", why:"否定對方感受，容易升溫。"},
   ];
 
-  // 遊戲設定
-  const TOTAL = 10;        // 每局題數（<= Q.length）
-  const TIME_LIMIT = 5;    // 每題秒數
+  // ===== 關卡設定 =====
+  const STAGES = [
+    { key:"humor",  name:"第1關：自以為幽默", count:4 },
+    { key:"blunt",  name:"第2關：講話太直", count:4 },
+    { key:"repair", name:"第3關：修復高手",   count:4 },
+  ];
+
+  const TIME_LIMIT = 6;   // 每題秒數
+  const MAX_LIFE  = 3;    // 生命值
 
   const $ = id => document.getElementById(id);
-  const screens = {
-    start: $("screenStart"),
-    game: $("screenGame"),
-    end: $("screenEnd")
-  };
+  const screens = { start:$("screenStart"), game:$("screenGame"), end:$("screenEnd") };
 
   function tagInfo(s){
     if(s==="G") return {cls:"tG", txt:"🟢 綠燈", full:"安全"};
@@ -193,21 +261,34 @@
     return {cls:"tR", txt:"🔴 紅燈", full:"踩線"};
   }
 
-  let player="", score=0, streak=0, bestStreak=0, correct=0;
+  function shuffle(arr){
+    const a = [...arr];
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+
+  // ===== 狀態 =====
+  let player="", score=0, streak=0, bestStreak=0, correct=0, rewrites=0;
+  let life=MAX_LIFE;
+  let stageStats = {}; // {key:{total,correct}}
   let pool=[], idx=0, timer=null, t=TIME_LIMIT, locked=false;
 
-  function pickQuestions(){
-    // shuffle
-    const arr = [...Q];
-    for(let i=arr.length-1;i>0;i--){
-      const j = Math.floor(Math.random()*(i+1));
-      [arr[i],arr[j]]=[arr[j],arr[i]];
+  function buildPool(){
+    stageStats = {};
+    const out = [];
+    for(const st of STAGES){
+      const items = BANK.filter(x=>x.topic===st.key);
+      const pick = shuffle(items).slice(0, st.count);
+      stageStats[st.key] = { total: pick.length, correct: 0 };
+      out.push(...pick.map(q=>({...q, stageKey: st.key})));
     }
-    return arr.slice(0, Math.min(TOTAL, arr.length));
+    return out;
   }
 
   function beep(ok=true){
-    // 簡單音效（不需要外部檔案）
     try{
       const ctx = new (window.AudioContext||window.webkitAudioContext)();
       const o = ctx.createOscillator();
@@ -229,15 +310,48 @@
   function start(){
     player = ($("name").value || "").trim();
     if(!player){ $("name").focus(); return; }
-    score=0; streak=0; bestStreak=0; correct=0;
-    pool = pickQuestions();
+
+    score=0; streak=0; bestStreak=0; correct=0; rewrites=0;
+    life=MAX_LIFE;
+    pool = buildPool();
     idx = 0;
+
     $("player").textContent = player;
     $("score").textContent = score;
     $("streak").textContent = streak;
+    $("life").textContent = life;
     $("total").textContent = pool.length;
+
+    updateMap();
     show("game");
     nextQ();
+  }
+
+  function stopTimer(){
+    if(timer){ clearInterval(timer); timer=null; }
+  }
+
+  function updateBar(){
+    const p = (t / TIME_LIMIT) * 100;
+    $("fill").style.width = `${Math.max(0,p)}%`;
+  }
+
+  function stageNameOf(q){
+    return STAGES.find(s=>s.key===q.stageKey)?.name || "—";
+  }
+
+  function updateMap(){
+    const q = pool[idx] || pool[Math.max(0, idx-1)];
+    const currentKey = q?.stageKey;
+
+    STAGES.forEach((st, i)=>{
+      const node = $("n"+i);
+      node.classList.remove("on","done");
+      const stat = stageStats[st.key];
+      const done = stat && stat.correct === stat.total && stat.total>0; // 完美才算 done
+      if(done) node.classList.add("done");
+      if(st.key===currentKey) node.classList.add("on");
+    });
   }
 
   function resetQUI(){
@@ -251,10 +365,17 @@
   }
 
   function nextQ(){
-    if(idx >= pool.length){ end(); return; }
+    if(life<=0){ end(true); return; }
+    if(idx >= pool.length){ end(false); return; }
+
     resetQUI();
+
+    const q = pool[idx];
     $("idx").textContent = idx+1;
-    $("q").textContent = pool[idx].text;
+    $("q").textContent = q.text;
+    $("stageName").textContent = stageNameOf(q);
+
+    updateMap();
     startTimer();
   }
 
@@ -263,25 +384,21 @@
     t = TIME_LIMIT;
     $("t").textContent = t;
     updateBar();
+
     timer = setInterval(()=>{
       t--;
       $("t").textContent = t;
       updateBar();
       if(t<=0){
         stopTimer();
-        // 沒作答視為錯，直接揭示
-        answer(null);
+        answer(null); // timeout
       }
     }, 1000);
   }
 
-  function stopTimer(){
-    if(timer){ clearInterval(timer); timer=null; }
-  }
-
-  function updateBar(){
-    const p = (t / TIME_LIMIT) * 100;
-    $("fill").style.width = `${Math.max(0,p)}%`;
+  function loseLife(){
+    life--;
+    $("life").textContent = life;
   }
 
   function answer(choice){
@@ -291,63 +408,108 @@
 
     const q = pool[idx];
     const sug = q.suggested;
-    const isCorrect = (choice === sug);
-    const speedBonus = Math.max(0, t); // 越快越多（0~4）
+
     let gained = 0;
+    let ok = false;
 
     if(choice===null){
-      // time out
       beep(false);
       streak = 0;
+      loseLife();
       $("qBox").classList.add("shake");
-    }else if(isCorrect){
+    }else if(choice===sug){
+      ok = true;
       beep(true);
+
       correct++;
+      stageStats[q.stageKey].correct++;
+
       streak++;
       bestStreak = Math.max(bestStreak, streak);
-      gained = 5 + speedBonus; // 基礎 5 分 + 速度
+
+      const speedBonus = Math.max(0, t);         // 0~5
+      const streakBonus = Math.min(10, streak);  // 1~10
+      gained = 10 + speedBonus*2 + streakBonus;  // 基礎10 + 速度 + 連擊
       score += gained;
     }else{
       beep(false);
       streak = 0;
+      loseLife();
       $("qBox").classList.add("shake");
     }
 
     $("score").textContent = score;
     $("streak").textContent = streak;
 
-    // reveal
     const tag = tagInfo(sug);
     $("tag").className = `tag ${tag.cls}`;
-    $("tag").textContent = `${tag.txt}`;
-    $("ansTxt").textContent = `${tag.full}`;
+    $("tag").textContent = tag.txt;
+    $("ansTxt").textContent = tag.full;
     $("why").textContent = q.why;
+    $("gainPill").textContent = ok ? `+${gained}` : "0";
 
     $("result").classList.remove("hide");
+
+    // 若剛好扣到 0 ❤️，讓他看完解析後下一題會直接結算
   }
 
   function submitRewrite(){
-    // 有寫就加分（個人版不做語意評分，避免爭議）
     const txt = ($("rewrite").value || "").trim();
     if(!txt) return;
-    score += 2;
+
+    rewrites++;
+    let add = 2;
+
+    // 有修復關鍵字再+1（更像遊戲）
+    const repairWords = ["對不起","抱歉","收回","我錯了","我會注意","先停","謝謝你提醒"];
+    if(repairWords.some(w=>txt.includes(w))) add += 1;
+
+    score += add;
     $("score").textContent = score;
     beep(true);
+
+    // 小提示：不要重複刷（可接受，但這裡就不限制）
   }
 
-  function end(){
+  function end(isGameOver){
     show("end");
+
     $("endName").textContent = player;
     $("endScore").textContent = score;
+    $("endRewrite").textContent = rewrites;
+
     const acc = Math.round((correct / pool.length) * 100);
     $("endAcc").textContent = `${acc}%`;
     $("endStreak").textContent = bestStreak;
 
-    let title = "🙂 友善新手";
-    if(acc>=80 && bestStreak>=3) title = "🧠 界線雷達高手";
-    if(acc>=90 && bestStreak>=4) title = "🏆 幽默守門員（最強）";
-    if(acc<50) title = "🛑 小心踩線王（需要練修復）";
-    $("title").textContent = title;
+    const badges = [];
+    // 基礎徽章
+    if(isGameOver) badges.push("💥 被❤️打倒了（再挑戰一次）");
+    if(acc >= 85) badges.push("🧠 界線雷達高手");
+    if(bestStreak >= 4) badges.push("🔥 連擊高手");
+    if(rewrites >= 3) badges.push("✍️ 改寫練習家");
+    if(rewrites >= 5) badges.push("🛠️ 修復達人");
+
+    // 主題徽章
+    const bluntAcc = stageStats.blunt ? Math.round((stageStats.blunt.correct/stageStats.blunt.total)*100) : 0;
+    const repairAcc = stageStats.repair ? Math.round((stageStats.repair.correct/stageStats.repair.total)*100) : 0;
+    if(bluntAcc >= 75) badges.push("🎯 直話轉換師");
+    if(repairAcc >= 75) badges.push("🕊️ 和平修復師");
+
+    // 完美通關：三關都全對
+    const perfectAll = STAGES.every(st => stageStats[st.key] && stageStats[st.key].correct === stageStats[st.key].total);
+    if(perfectAll) badges.push("🏆 完美通關王");
+
+    if(badges.length===0) badges.push("🙂 友善新手（再玩一次會更強）");
+
+    const box = $("badges");
+    box.innerHTML = "";
+    badges.forEach(b=>{
+      const span = document.createElement("span");
+      span.className = "badge";
+      span.textContent = b;
+      box.appendChild(span);
+    });
   }
 
   function again(){
@@ -355,7 +517,7 @@
     show("start");
   }
 
-  // events
+  // ===== 事件 =====
   $("btnGo").onclick = start;
   $("btnG").onclick = ()=>answer("G");
   $("btnY").onclick = ()=>answer("Y");
@@ -365,7 +527,7 @@
   $("btnSubmitRewrite").onclick = submitRewrite;
   $("btnAgain").onclick = again;
 
-  // 也支援鍵盤（若用筆電）
+  // 鍵盤（若有人用筆電）
   document.addEventListener("keydown",(e)=>{
     if(screens.game.classList.contains("hide")) return;
     if(e.key==="1") answer("G");
