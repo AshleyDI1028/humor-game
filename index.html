@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>梗界線大闖關（個人版）</title>
+  <style>
+    :root{
+      --bg:#0b1020; --card:#121a33; --line:#243059;
+      --text:#eef3ff; --muted:#b9c4e6;
+      --g:#22c55e; --y:#facc15; --r:#ef4444; --b:#2a5bff;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,Segoe UI,Arial,"Noto Sans TC",sans-serif;background:radial-gradient(1200px 800px at 20% -10%, #1a2b6a 0%, var(--bg) 55%);color:var(--text);}
+    .wrap{max-width:980px;margin:0 auto;padding:18px;}
+    .card{background:rgba(18,26,51,.92);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.25);}
+    h1{margin:0;font-size:22px}
+    .muted{color:var(--muted)}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .space{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    input, textarea{
+      width:100%;border:1px solid var(--line);background:#0f1734;color:var(--text);
+      border-radius:14px;padding:12px;font-size:15px;outline:none;
+    }
+    textarea{min-height:70px;resize:vertical}
+    button{
+      border:1px solid var(--line);background:#0f1734;color:var(--text);
+      padding:12px 14px;border-radius:14px;cursor:pointer;font-weight:900;
+      transition:transform .06s ease, filter .15s ease;
+    }
+    button:active{transform:scale(.98)}
+    button:hover{filter:brightness(1.08)}
+    .primary{background:var(--b);border-color:var(--b)}
+    .g{border-color:rgba(34,197,94,.5)} .y{border-color:rgba(250,204,21,.5)} .r{border-color:rgba(239,68,68,.5)}
+    .g:hover{background:rgba(34,197,94,.14)} .y:hover{background:rgba(250,204,21,.14)} .r:hover{background:rgba(239,68,68,.14)}
+    .bigQ{font-size:34px;line-height:1.22;font-weight:1000;margin:10px 0 6px}
+    .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);padding:8px 10px;border-radius:999px;color:var(--muted);font-size:13px}
+    .bar{height:10px;background:#0e1531;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+    .fill{height:100%;width:0%;background:linear-gradient(90deg,var(--g),var(--y),var(--r))}
+    .grid2{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin-top:12px}
+    @media (max-width:900px){.grid2{grid-template-columns:1fr}}
+    .tag{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:1000;border:1px solid transparent}
+    .tG{background:rgba(34,197,94,.18);border-color:rgba(34,197,94,.35)}
+    .tY{background:rgba(250,204,21,.18);border-color:rgba(250,204,21,.35)}
+    .tR{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.35)}
+    .shake{animation:shake .25s ease-in-out 0s 2}
+    @keyframes shake{0%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}100%{transform:translateX(0)}}
+    .pop{animation:pop .18s ease-out}
+    @keyframes pop{0%{transform:scale(.98)}100%{transform:scale(1)}}
+    .mini{font-size:12px;line-height:1.5;color:var(--muted)}
+    .hide{display:none}
+    .stat{border:1px solid var(--line);border-radius:16px;padding:12px;background:#0f1734}
+    .stat b{font-size:18px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="space" style="margin-bottom:12px">
+      <h1>🎮 梗界線大闖關（個人版）</h1>
+      <div class="pill">🟢安全｜🟡有風險｜🔴踩線　⏱️每題 5 秒</div>
+    </div>
+
+    <!-- Start Screen -->
+    <div id="screenStart" class="card">
+      <div class="muted">輸入暱稱後開始（建議：班級座號，例如 204-15）</div>
+      <div style="margin-top:10px" class="row">
+        <div style="flex:1;min-width:240px">
+          <input id="name" placeholder="你的暱稱 / 班級座號" maxlength="18">
+        </div>
+        <button class="primary" id="btnGo">開始闖關</button>
+      </div>
+      <div class="mini" style="margin-top:10px">
+        遊戲結束會顯示成績頁，可截圖交給老師。<br>
+        小提醒：這是「練判斷與修復」，不是在鼓勵嘴人。
+      </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="screenGame" class="card hide">
+      <div class="space">
+        <div class="row">
+          <span class="pill">玩家：<b id="player">—</b></span>
+          <span class="pill">分數：<b id="score">0</b></span>
+          <span class="pill">連擊：<b id="streak">0</b>🔥</span>
+        </div>
+        <div class="row">
+          <span class="pill">題目：<b id="idx">0</b>/<b id="total">0</b></span>
+          <span class="pill">剩餘：<b id="t">5</b>s</span>
+        </div>
+      </div>
+
+      <div style="margin-top:10px" class="bar"><div id="fill" class="fill"></div></div>
+
+      <div id="qBox" class="pop">
+        <div class="muted" style="margin-top:10px">這句話是 🟢🟡🔴？（3 秒內直覺選，剩下時間可思考）</div>
+        <div class="bigQ" id="q">—</div>
+
+        <div class="row" style="margin-top:10px">
+          <button class="g" id="btnG">🟢 綠燈</button>
+          <button class="y" id="btnY">🟡 黃燈</button>
+          <button class="r" id="btnR">🔴 紅燈</button>
+          <button id="btnHint">💡 5秒檢查</button>
+        </div>
+
+        <div id="hint" class="mini hide" style="margin-top:10px">
+          ①笑的是事還是笑人？②公開講會不會讓人難堪？③被截圖給導師/家長看敢不敢？④對方能拒絕不笑嗎？
+        </div>
+      </div>
+
+      <div id="result" class="hide" style="margin-top:12px">
+        <div class="row" style="align-items:flex-start">
+          <div style="flex:1;min-width:260px" class="stat">
+            <div class="row">
+              <span id="tag" class="tag">—</span>
+              <span class="muted">建議：</span><b id="ansTxt">—</b>
+            </div>
+            <div style="margin-top:8px;font-weight:900" id="why">—</div>
+            <div class="mini" style="margin-top:10px">提示：意圖是你的；感受是對方的。對方不舒服＝立刻停。</div>
+          </div>
+
+          <div style="flex:1;min-width:260px" class="stat">
+            <div class="muted">加分關：把它改成「同樣好玩但不傷人」（可跳過）</div>
+            <textarea id="rewrite" placeholder="改寫一句更好的說法（例如：改笑事不笑人／或加上尊重與修復）"></textarea>
+            <div class="row" style="margin-top:8px">
+              <button class="primary" id="btnSubmitRewrite">提交改寫 +2</button>
+              <button id="btnNext">下一題</button>
+            </div>
+            <div class="mini" style="margin-top:8px">
+              參考：把「你怎麼那麼…」→「我剛剛有點被嚇到/我想確認一下…」；失手就說「我收回，對不起」。
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- End Screen -->
+    <div id="screenEnd" class="card hide">
+      <div class="space">
+        <h1>🏁 結算成績</h1>
+        <button id="btnAgain" class="primary">再玩一次</button>
+      </div>
+
+      <div class="grid2">
+        <div class="stat">
+          <div class="muted">玩家</div><b id="endName">—</b>
+          <div class="muted" style="margin-top:10px">總分</div><b id="endScore">0</b>
+          <div class="muted" style="margin-top:10px">正確率</div><b id="endAcc">0%</b>
+          <div class="muted" style="margin-top:10px">最高連擊</div><b id="endStreak">0</b>
+        </div>
+        <div class="stat">
+          <div class="muted">稱號</div>
+          <div style="font-size:20px;font-weight:1000;margin-top:6px" id="title">—</div>
+          <div class="mini" style="margin-top:10px">
+            建議做法：截圖這頁交給老師（或把分數念給老師登記）。
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // 題庫：你可自由加題（text/ suggested/ why）
+  const Q = [
+    {text:"「你今天看起來胖了欸哈哈」", suggested:"R", why:"拿外貌/身材當笑點＝高敏感，容易讓人羞辱與自卑。"},
+    {text:"「笑死你怎麼那麼笨」", suggested:"R", why:"貼標籤貶低人，包成玩笑也一樣會傷人。"},
+    {text:"「你這髮型很勇敢欸」", suggested:"Y", why:"可能是吐槽外表；若公開講很容易踩線。"},
+    {text:"「你是不是又在演」", suggested:"R", why:"否定情緒/求助，會讓人更不敢說。"},
+    {text:"「你很玻璃心欸，我開玩笑的」", suggested:"R", why:"把責任推回對方＝二次傷害；『我開玩笑』不是免責金牌。"},
+    {text:"「你家很有錢喔？請客啦哈哈」", suggested:"Y", why:"家庭/金錢是敏感點，容易被起鬨或貼標籤。"},
+    {text:"「你沒朋友喔？都自己一個」", suggested:"R", why:"拿社交處境開玩笑會刺到痛點，容易造成孤立。"},
+    {text:"「你這分數…我不意外啦」", suggested:"R", why:"公開嘲諷成績＝讓人難堪，屬於羞辱型玩笑。"},
+    {text:"「我剛剛緊張到講錯，笑我啦」", suggested:"G", why:"笑點放在自己身上（自嘲）通常較安全。"},
+    {text:"「你不舒服我就不講了，謝謝你提醒我」", suggested:"G", why:"能停下來尊重界線，是成熟幽默。"},
+    {text:"「你皮膚今天很熱鬧」", suggested:"R", why:"外貌/皮膚狀況是高敏感點，容易羞恥。"},
+    {text:"「你今天穿這樣也敢出門喔？」", suggested:"R", why:"嘲諷穿著＝公開貶低，對方會被迫尷尬或假笑。"},
+  ];
+
+  // 遊戲設定
+  const TOTAL = 10;        // 每局題數（<= Q.length）
+  const TIME_LIMIT = 5;    // 每題秒數
+
+  const $ = id => document.getElementById(id);
+  const screens = {
+    start: $("screenStart"),
+    game: $("screenGame"),
+    end: $("screenEnd")
+  };
+
+  function tagInfo(s){
+    if(s==="G") return {cls:"tG", txt:"🟢 綠燈", full:"安全"};
+    if(s==="Y") return {cls:"tY", txt:"🟡 黃燈", full:"有風險"};
+    return {cls:"tR", txt:"🔴 紅燈", full:"踩線"};
+  }
+
+  let player="", score=0, streak=0, bestStreak=0, correct=0;
+  let pool=[], idx=0, timer=null, t=TIME_LIMIT, locked=false;
+
+  function pickQuestions(){
+    // shuffle
+    const arr = [...Q];
+    for(let i=arr.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]]=[arr[j],arr[i]];
+    }
+    return arr.slice(0, Math.min(TOTAL, arr.length));
+  }
+
+  function beep(ok=true){
+    // 簡單音效（不需要外部檔案）
+    try{
+      const ctx = new (window.AudioContext||window.webkitAudioContext)();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type="sine";
+      o.frequency.value = ok ? 660 : 220;
+      g.gain.value = 0.08;
+      o.connect(g); g.connect(ctx.destination);
+      o.start();
+      setTimeout(()=>{o.stop(); ctx.close();}, 120);
+    }catch(e){}
+  }
+
+  function show(screen){
+    Object.values(screens).forEach(s=>s.classList.add("hide"));
+    screens[screen].classList.remove("hide");
+  }
+
+  function start(){
+    player = ($("name").value || "").trim();
+    if(!player){ $("name").focus(); return; }
+    score=0; streak=0; bestStreak=0; correct=0;
+    pool = pickQuestions();
+    idx = 0;
+    $("player").textContent = player;
+    $("score").textContent = score;
+    $("streak").textContent = streak;
+    $("total").textContent = pool.length;
+    show("game");
+    nextQ();
+  }
+
+  function resetQUI(){
+    $("hint").classList.add("hide");
+    $("result").classList.add("hide");
+    $("rewrite").value = "";
+    locked=false;
+    $("qBox").classList.remove("shake");
+    $("qBox").classList.add("pop");
+    setTimeout(()=>$("qBox").classList.remove("pop"), 200);
+  }
+
+  function nextQ(){
+    if(idx >= pool.length){ end(); return; }
+    resetQUI();
+    $("idx").textContent = idx+1;
+    $("q").textContent = pool[idx].text;
+    startTimer();
+  }
+
+  function startTimer(){
+    stopTimer();
+    t = TIME_LIMIT;
+    $("t").textContent = t;
+    updateBar();
+    timer = setInterval(()=>{
+      t--;
+      $("t").textContent = t;
+      updateBar();
+      if(t<=0){
+        stopTimer();
+        // 沒作答視為錯，直接揭示
+        answer(null);
+      }
+    }, 1000);
+  }
+
+  function stopTimer(){
+    if(timer){ clearInterval(timer); timer=null; }
+  }
+
+  function updateBar(){
+    const p = (t / TIME_LIMIT) * 100;
+    $("fill").style.width = `${Math.max(0,p)}%`;
+  }
+
+  function answer(choice){
+    if(locked) return;
+    locked=true;
+    stopTimer();
+
+    const q = pool[idx];
+    const sug = q.suggested;
+    const isCorrect = (choice === sug);
+    const speedBonus = Math.max(0, t); // 越快越多（0~4）
+    let gained = 0;
+
+    if(choice===null){
+      // time out
+      beep(false);
+      streak = 0;
+      $("qBox").classList.add("shake");
+    }else if(isCorrect){
+      beep(true);
+      correct++;
+      streak++;
+      bestStreak = Math.max(bestStreak, streak);
+      gained = 5 + speedBonus; // 基礎 5 分 + 速度
+      score += gained;
+    }else{
+      beep(false);
+      streak = 0;
+      $("qBox").classList.add("shake");
+    }
+
+    $("score").textContent = score;
+    $("streak").textContent = streak;
+
+    // reveal
+    const tag = tagInfo(sug);
+    $("tag").className = `tag ${tag.cls}`;
+    $("tag").textContent = `${tag.txt}`;
+    $("ansTxt").textContent = `${tag.full}`;
+    $("why").textContent = q.why;
+
+    $("result").classList.remove("hide");
+  }
+
+  function submitRewrite(){
+    // 有寫就加分（個人版不做語意評分，避免爭議）
+    const txt = ($("rewrite").value || "").trim();
+    if(!txt) return;
+    score += 2;
+    $("score").textContent = score;
+    beep(true);
+  }
+
+  function end(){
+    show("end");
+    $("endName").textContent = player;
+    $("endScore").textContent = score;
+    const acc = Math.round((correct / pool.length) * 100);
+    $("endAcc").textContent = `${acc}%`;
+    $("endStreak").textContent = bestStreak;
+
+    let title = "🙂 友善新手";
+    if(acc>=80 && bestStreak>=3) title = "🧠 界線雷達高手";
+    if(acc>=90 && bestStreak>=4) title = "🏆 幽默守門員（最強）";
+    if(acc<50) title = "🛑 小心踩線王（需要練修復）";
+    $("title").textContent = title;
+  }
+
+  function again(){
+    $("name").value = player;
+    show("start");
+  }
+
+  // events
+  $("btnGo").onclick = start;
+  $("btnG").onclick = ()=>answer("G");
+  $("btnY").onclick = ()=>answer("Y");
+  $("btnR").onclick = ()=>answer("R");
+  $("btnNext").onclick = ()=>{ idx++; nextQ(); };
+  $("btnHint").onclick = ()=>$("hint").classList.toggle("hide");
+  $("btnSubmitRewrite").onclick = submitRewrite;
+  $("btnAgain").onclick = again;
+
+  // 也支援鍵盤（若用筆電）
+  document.addEventListener("keydown",(e)=>{
+    if(screens.game.classList.contains("hide")) return;
+    if(e.key==="1") answer("G");
+    if(e.key==="2") answer("Y");
+    if(e.key==="3") answer("R");
+  });
+</script>
+</body>
+</html>
